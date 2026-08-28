@@ -1,3 +1,30 @@
+# Environment variables
 .env
 .env.*
 !.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+env/
+venv/
+ENV/
+
+# Databases & WAL files
+*.db-shm
+*.db-wal
+
+# OS / IDE
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/

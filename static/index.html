@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student OS AI - Adaptive Learning Roadmap & AI Task Planner powered by LangGraph and FastAPI">
+  <title>Student OS AI — Personalized Learning & Task Planner</title>
+  
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-logo">
+        <div class="logo-badge">OS</div>
+        <div>
+          <h1 class="brand-title">Student OS AI</h1>
+          <p class="brand-subtitle">Autonomous Adaptive Learning Agent</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div id="connectionStatus" class="badge-status">
+          <span class="status-dot"></span>
+          <span>Agent Online</span>
+        </div>
+        <button id="btnViewHistory" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+          💬 View Reasoning Logs
+        </button>
+      </div>
+    </header>
+
+    <!-- Goal Creator / Hero -->
+    <section class="glass-card hero-section">
+      <h2 class="hero-title">What is your learning goal?</h2>
+      <p class="hero-desc">
+        Define your objective. The AI agent analyzes required competencies, crafts an ordered milestone roadmap, outlines a practical project, and autonomously orchestrates actionable learning tasks.
+      </p>
+
+      <form id="goalForm">
+        <div class="goal-form-grid">
+          <div class="form-group">
+            <label for="studentIdInput" class="form-label">Student ID / Session</label>
+            <input type="text" id="studentIdInput" class="input-field" placeholder="e.g. student_alex_01" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="goalInput" class="form-label">Target Learning Goal</label>
+            <input type="text" id="goalInput" class="input-field" placeholder="e.g. I want to become an AI Engineer building LLM applications" required>
+          </div>
+
+          <button type="submit" id="btnGeneratePlan" class="btn btn-primary">
+            <span>✨ Generate Learning OS</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="suggestion-chips">
+        <span class="chips-label">Popular Goals:</span>
+        <button type="button" class="chip-btn" data-goal="I want to become a Machine Learning Engineer">🤖 ML Engineer</button>
+        <button type="button" class="chip-btn" data-goal="I want to master Full-Stack Development with Python and React">⚡ Full-Stack Python & React</button>
+        <button type="button" class="chip-btn" data-goal="I want to learn Data Science with Pandas and SQL">📊 Data Science & SQL</button>
+        <button type="button" class="chip-btn" data-goal="I want to build Generative AI and LangChain Agents">🧠 GenAI & LangGraph</button>
+      </div>
+    </section>
+
+    <!-- Main Learning OS Dashboard (Initially hidden if empty) -->
+    <main id="dashboardContainer" class="dashboard-layout" style="display: none;">
+      
+      <!-- Left / Main Column -->
+      <div class="main-column">
+        
+        <!-- Active Task Highlight Card -->
+        <section class="glass-card active-task-card">
+          <span class="card-tag">⚡ Current Active Milestone</span>
+          <h3 id="currentTaskTitle" class="active-task-title">Loading current task...</h3>
+          
+          <div class="active-task-meta">
+            <span>Next up: <strong id="nextTaskLabel" style="color: var(--text-primary);">--</strong></span>
+          </div>
+
+          <div class="task-actions">
+            <button id="btnMarkComplete" class="btn btn-success">
+              <span>✅ Mark as Complete & Advance</span>
+            </button>
+            <button id="btnImStuck" class="btn btn-warning">
+              <span>🧩 I'm Stuck (Break Down Task)</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Prioritized Tasks Execution List -->
+        <section class="glass-card">
+          <div class="section-title">
+            <span>📋 Prioritized Task Execution Queue</span>
+            <span id="taskCountBadge" class="card-tag" style="margin-bottom: 0;">0 Tasks</span>
+          </div>
+          <div id="tasksList" class="task-list">
+            <!-- Dynamic task items -->
+          </div>
+        </section>
+
+        <!-- Project Implementation Guide -->
+        <section class="glass-card">
+          <h3 class="section-title">🛠️ First Hands-On Project</h3>
+          <div id="projectDescription" class="project-card-body">
+            <!-- Project content -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Right / Side Column -->
+      <div class="side-column">
+        
+        <!-- Overall Progress Card -->
+        <section class="glass-card progress-card">
+          <div class="progress-header">
+            <span class="progress-title">Overall Roadmap Progress</span>
+            <span id="progressPercentage" class="progress-percentage">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="progressBarFill" class="progress-bar-fill"></div>
+          </div>
+          <div class="progress-stats">
+            <div class="stat-item">
+              <div id="statCompleted" class="stat-num">0</div>
+              <div class="stat-lbl">Completed</div>
+            </div>
+            <div class="stat-item">
+              <div id="statRemaining" class="stat-num">0</div>
+              <div class="stat-lbl">Remaining</div>
+            </div>
+            <div class="stat-item">
+              <div id="statTotal" class="stat-num">0</div>
+              <div class="stat-lbl">Total</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Required Skills -->
+        <section class="glass-card">
+          <h3 class="section-title">🎯 Competencies & Skills</h3>
+          <div id="skillsContainer" class="badge-list">
+            <!-- Skills badges -->
+          </div>
+        </section>
+
+        <!-- Roadmap Timeline -->
+        <section class="glass-card">
+          <h3 class="section-title">🗺️ Learning Milestones</h3>
+          <div id="roadmapContainer" class="roadmap-timeline">
+            <!-- Roadmap milestones -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="glass-card empty-state">
+      <div class="empty-icon">🚀</div>
+      <h3 style="font-family: var(--font-heading); font-size: 20px; margin-bottom: 8px;">No Active Learning Plan Yet</h3>
+      <p style="font-size: 14px; max-width: 500px; margin: 0 auto;">
+        Enter a goal above or select a preset goal chip to let your AI tutor initialize an adaptive study roadmap.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Agent Reasoning & History Modal -->
+  <div id="historyModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-size: 18px;">💬 Agent Activity & Reasoning Logs</h3>
+        <button id="btnCloseModal" class="modal-close-btn">&times;</button>
+      </div>
+      <div id="historyLogsContainer" class="modal-body">
+        <p style="color: var(--text-muted); text-align: center; padding: 20px;">No logs recorded yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
